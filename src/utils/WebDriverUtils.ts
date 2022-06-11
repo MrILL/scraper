@@ -12,4 +12,12 @@ export class WebDriverUtils {
   static async getDocumentScrollTop(driver: WebDriver): Promise<number> {
     return driver.executeScript('return document.documentElement.scrollTop')
   }
+
+  static async documentScrollBy(
+    driver: WebDriver,
+    x: number,
+    y: number
+  ): Promise<void> {
+    return driver.executeScript(`window.scrollBy(${x}, ${y})`)
+  }
 }

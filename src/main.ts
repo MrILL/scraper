@@ -42,8 +42,6 @@ const getObjRecurcively = async (driver: WebDriver, webElement: WebElement) => {
 }
 
 async function example() {
-  console.log(process.env.CHROME_DRIVER)
-
   const driver = await new Builder()
     .disableEnvironmentOverrides()
     .forBrowser('chrome')
