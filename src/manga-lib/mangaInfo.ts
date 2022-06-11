@@ -44,8 +44,6 @@ export type Info = {
   additionalInfo: { [key: string]: string }
 }
 
-//TODO need to make something like ElementsScraper (many elements)
-// that will be write into obj, not like object inside object)
 export const infoScraper: ElementScraper<Info['additionalInfo']> =
   new ElementScraper(
     By.className('media-info-list'),

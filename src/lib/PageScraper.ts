@@ -15,9 +15,6 @@ export type DriverBasedScraperCollection<T> = {
 }
 
 export class PageScraper<T = { [key: string]: unknown }> {
-  //TODO decide about keeping it as map
-  // private elementScrapers: Map<string, ElementScraper<unknown>>
-
   private url?: string
 
   private customGetter?: (driver: WebDriver) => Promise<void>
@@ -26,9 +23,6 @@ export class PageScraper<T = { [key: string]: unknown }> {
 
   private driverBasedScrapers: DriverBasedScraperCollection<T> = {}
 
-  //TODO decide about putting collection of
-  //ElementScraper * DriverBasedScrapers together
-  //TODO think about options like custom saving result into db or else
   constructor(
     url: string,
     elementScrapers?: ElementScraperCollection<T>,
@@ -53,31 +47,20 @@ export class PageScraper<T = { [key: string]: unknown }> {
     }
 
     if (elementScrapers) {
-      //TODO fix unnesessary if
       for (const key of Object.keys(elementScrapers)) {
-        // TODO fix unnesesary if
         const elementScraper = elementScrapers[key as keyof T]
-        if (elementScraper) {
-          this.addElementScraper(key as keyof T, elementScraper)
-        } else {
-          throw new Error('Unexpected error')
-        }
+
+        this.addElementScraper(key as keyof T, elementScraper as any)
       }
     }
 
-    //TODO fix unnesessary if
     if (driverBasedScrapers) {
       for (const key of Object.keys(driverBasedScrapers)) {
-        // TODO fix unnesesary if
         const driverBasedScraper = driverBasedScrapers[key as keyof T]
-        if (driverBasedScraper) {
-          this.addDriverBasedScraper(key as keyof T, driverBasedScraper)
-        } else {
-          throw new Error('Unexpected error')
-        }
+
+        this.addDriverBasedScraper(key as keyof T, driverBasedScraper as any)
       }
     }
-    // this.elementScrapers = new Map()
   }
 
   private checkField(fieldName: keyof T): boolean {
@@ -132,9 +115,6 @@ export class PageScraper<T = { [key: string]: unknown }> {
       result.set(key, await driverBaseScraper.scrape(driver))
     }
 
-    //TODO validator
-
-    // return result
     return Object.fromEntries(result)
   }
 }

@@ -6,7 +6,6 @@ export class WebElementUtils {
     return webElement.findElements(By.xpath('./*'))
   }
 
-  //TODO warning: not always working
   static async getOwnText(webElement: WebElement): Promise<string> {
     const $ = cheerio.load(
       await webElement.getAttribute('outerHTML'),
