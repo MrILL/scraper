@@ -18,13 +18,13 @@ export type WaitOptionsT = {
  * const waitOptions = new WaitOptions()
  *   .setCondition(until.elementLocated)
  *   .setTimeout(1000)
- *   .setMessage('suck')
+ *   .setMessage('Too long')
  *   .setPollTimeOut(1000)
  *
  * @example
  * const waitOptions = new WaitOptions({
  *   condition: until.elementLocated,
- *   message: 'suck',
+ *   message: 'Too long',
  *   pollTimeout: 1000,
  * })
  */
@@ -44,7 +44,7 @@ export class WaitOptions implements WaitOptionsT {
     Object.assign(this, options || {})
   }
 
-  setOptions(options: WaitOptionsT) {
+  setOptions(options: WaitOptionsT): void {
     const { condition, ...restOptions } = options
     if (condition) {
       this.setCondition(condition)

@@ -1,13 +1,13 @@
 import path = require('path')
 import fs = require('fs')
 import { WebDriver } from 'selenium-webdriver'
-import { urlRemoveReserverdChars } from '../utils'
 import { MangaCatalogScraper } from './catalog'
 import { getMangaInfoScraper } from './mangaInfo'
 import { MangaChapterListScraper } from './mangaChapterList'
+import { urlRemoveReserverdChars } from '../utils'
 
 export class MangaLibScraper {
-  async scrapSomething(driver: WebDriver) {
+  async scrap(driver: WebDriver) {
     const workingDir = path.join(process.cwd(), './result/manga-lib')
     if (!fs.existsSync(workingDir)) {
       fs.mkdirSync(workingDir)

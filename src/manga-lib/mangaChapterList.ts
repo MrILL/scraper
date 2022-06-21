@@ -1,4 +1,9 @@
-import { DriverBasedScraper, PageScraper } from '../lib'
+import {
+  DriverBasedScraper,
+  ElementScraper,
+  PageScraper,
+  WaitOptions,
+} from '../lib'
 import { By, until, WebDriver } from 'selenium-webdriver'
 import { WebDriverUtils, WebElementUtils } from '../utils'
 
@@ -14,25 +19,12 @@ type ChapterList = {
   chapters: Map<string, Chapter>
 }
 
-export async function getChapters(
-  driver: WebDriver
-): Promise<Map<string, Chapter>> {
-  await driver.findElement(By.xpath("//li[@data-key='chapters']")).click()
-
-  const container = await driver.findElement(
-    By.className('vue-recycle-scroller__item-wrapper')
-  )
-  await driver.wait(until.elementIsVisible(container))
-
-  const documentHeight = await WebDriverUtils.getDocumentScrollHeight(driver)
-  const clientHeight = await WebDriverUtils.getDocumentClientHeight(driver)
-  let currentScroll = await WebDriverUtils.getDocumentScrollTop(driver)
-
-  const chaptersCollection = new Map()
-
-  do {
+const ResyclerSnapshotScraper = new ElementScraper<[string, Chapter][]>(
+  By.className('vue-recycle-scroller__item-wrapper'),
+  async (container) => {
     const chaptersEl = await WebElementUtils.getChildren(container)
-    await Promise.all(
+
+    return await Promise.all(
       chaptersEl.map(async (el) => {
         const metadataContainer = await el.findElement(
           By.className('media-chapter')
@@ -50,15 +42,40 @@ export async function getChapters(
           await chapterDataElements.map(async (el) => await el.getText())
         )
 
-        chaptersCollection.set(id, {
-          isRed,
-          name,
-          url,
-          translater,
-          date,
-        })
+        return [
+          id,
+          {
+            isRed: !!isRed,
+            name,
+            url,
+            translater,
+            date,
+          } as Chapter,
+        ]
       })
     )
+  },
+  {
+    wait: new WaitOptions({
+      condition: until.elementLocated,
+    }),
+  }
+)
+
+export async function getChapters(
+  driver: WebDriver
+): Promise<Map<string, Chapter>> {
+  const documentHeight = await WebDriverUtils.getDocumentScrollHeight(driver)
+  const clientHeight = await WebDriverUtils.getDocumentClientHeight(driver)
+  let currentScroll = await WebDriverUtils.getDocumentScrollTop(driver)
+
+  const chaptersCollection = new Map()
+
+  do {
+    const scraperRes = await ResyclerSnapshotScraper.scrape(driver)
+    scraperRes.forEach((pair: [string, Chapter]) => {
+      chaptersCollection.set(pair[0], pair[1])
+    })
 
     await WebDriverUtils.documentScrollBy(driver, 0, clientHeight)
     currentScroll = await WebDriverUtils.getDocumentScrollTop(driver)

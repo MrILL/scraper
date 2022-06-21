@@ -14,7 +14,7 @@ async function example() {
 
   try {
     const mangalib = new MangaLibScraper()
-    await mangalib.scrapSomething(driver)
+    await mangalib.scrap(driver)
   } finally {
     await driver.quit()
   }

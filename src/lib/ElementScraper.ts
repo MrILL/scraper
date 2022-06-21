@@ -1,11 +1,12 @@
 import { WebDriver, Locator, WebElement } from 'selenium-webdriver'
+import { BaseScraper } from './BaseScraper'
 import { WaitOptions } from './WaitOptions'
 
 export type ElementScraperOptionsT = {
   wait?: WaitOptions | (() => Promise<unknown>)
 }
 
-export class ElementScraper<T = unknown> {
+export class ElementScraper<T = unknown> implements BaseScraper {
   /**
    * Use methods of By from "selenium-webdriver"
    * @example

@@ -1,4 +1,5 @@
-export * from './PageScraper'
-export * from './ElementScraper'
+export * from './BaseScraper'
 export * from './DriverBasedScraper'
+export * from './ElementScraper'
+export * from './PageScraper'
 export * from './WaitOptions'
